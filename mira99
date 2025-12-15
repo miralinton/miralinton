@@ -1,0 +1,200 @@
+// README.md
+// Vollständig nutzbare, serverlose Open-Source-Grundlage
+// Stack: Next.js (App Router) + Vercel + GitHub + kostenfreie Tools
+
+/* =====================================================
+   1. PROJEKTSTRUKTUR
+===================================================== */
+
+/
+├─ app/
+│  ├─ [lang]/
+│  │  ├─ page.tsx            // Startseite
+│  │  ├─ blog/
+│  │  │  └─ page.tsx         // Blogübersicht
+│  │  ├─ subscribe/
+│  │  │  └─ page.tsx         // Subscription CTA
+│  │  ├─ legal/
+│  │  │  ├─ impressum/page.tsx
+│  │  │  ├─ datenschutz/page.tsx
+│  │  │  └─ agb/page.tsx
+│  ├─ layout.tsx
+│  └─ globals.css
+│
+├─ components/
+│  ├─ Header.tsx
+│  ├─ Footer.tsx
+│  ├─ LanguageSwitch.tsx
+│  ├─ CTA.tsx
+│
+├─ lib/
+│  └─ i18n.ts
+│
+├─ public/
+│  └─ mira-avatar.png
+│
+└─ next.config.js
+
+/* =====================================================
+   2. NEXT.CONFIG.JS – I18N
+===================================================== */
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  i18n: {
+    locales: ['de', 'en'],
+    defaultLocale: 'de'
+  }
+}
+module.exports = nextConfig
+
+/* =====================================================
+   3. APP/LAYOUT.TSX
+===================================================== */
+
+import './globals.css'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="de">
+      <body>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  )
+}
+
+/* =====================================================
+   4. STARTSEITE – APP/[LANG]/PAGE.TSX
+===================================================== */
+
+import CTA from '@/components/CTA'
+
+export default function Home() {
+  return (
+    <section className="hero">
+      <h1>Mira Linton</h1>
+      <p>Style. Trends. Nachhaltigkeit. Ehrlich erklärt.</p>
+      <CTA />
+    </section>
+  )
+}
+
+/* =====================================================
+   5. CTA KOMPONENTE
+===================================================== */
+
+export default function CTA() {
+  return (
+    <div className="cta">
+      <a href="/de/blog">Blog lesen</a>
+      <a href="/de/subscribe">Subscription</a>
+      <a href="https://newsletter-provider-link">Newsletter</a>
+    </div>
+  )
+}
+
+/* =====================================================
+   6. HEADER MIT SPRACHWECHSEL
+===================================================== */
+
+import LanguageSwitch from './LanguageSwitch'
+
+export default function Header() {
+  return (
+    <header>
+      <nav>
+        <span>Mira Linton</span>
+        <LanguageSwitch />
+      </nav>
+    </header>
+  )
+}
+
+/* =====================================================
+   7. LANGUAGE SWITCH
+===================================================== */
+
+'use client'
+import { usePathname, useRouter } from 'next/navigation'
+
+export default function LanguageSwitch() {
+  const pathname = usePathname()
+  const router = useRouter()
+
+  function switchLang(lang) {
+    const segments = pathname.split('/')
+    segments[1] = lang
+    router.push(segments.join('/'))
+  }
+
+  return (
+    <div>
+      <button onClick={() => switchLang('de')}>DE</button>
+      <button onClick={() => switchLang('en')}>EN</button>
+    </div>
+  )
+}
+
+/* =====================================================
+   8. IMPRESSUM (DEUTSCHES RECHT)
+===================================================== */
+
+export default function Impressum() {
+  return (
+    <article>
+      <h1>Impressum</h1>
+      <p>Angaben gemäß §5 TMG</p>
+      <p>Name, Anschrift, Kontakt (Platzhalter)</p>
+    </article>
+  )
+}
+
+/* =====================================================
+   9. DSGVO / DATENSCHUTZ
+===================================================== */
+
+export default function Datenschutz() {
+  return (
+    <article>
+      <h1>Datenschutzerklärung</h1>
+      <p>Wir speichern personenbezogene Daten ausschließlich über DSGVO-konforme Anbieter.</p>
+    </article>
+  )
+}
+
+/* =====================================================
+   10. GLOBALS.CSS (MARKENSTIL)
+===================================================== */
+
+:root {
+  --white: #ffffff;
+  --black: #1a1a1a;
+  --sage: #b8c9a5;
+  --mint: #7fffd4;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  background: var(--white);
+  color: var(--black);
+}
+
+.hero {
+  padding: 6rem 2rem;
+  text-align: center;
+}
+
+.cta a {
+  margin: 0 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  background: var(--mint);
+  text-decoration: none;
+  color: var(--black);
+}
